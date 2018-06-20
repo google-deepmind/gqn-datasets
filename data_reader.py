@@ -20,9 +20,8 @@ from __future__ import print_function
 
 import collections
 import os
-from pytflib import nest
 import tensorflow as tf
-
+nest = tf.contrib.framework.nest
 
 DatasetInfo = collections.namedtuple(
     'DatasetInfo',
