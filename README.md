@@ -75,8 +75,7 @@ Raw data files referred to in this document are available to download
 [here](https://console.cloud.google.com/storage/gqn-dataset). To download the
 datasets you can use
 the [`gsutil cp`](https://cloud.google.com/storage/docs/gsutil/commands/cp)
-command; see also the `gsutil` [installation instructions]
-(https://cloud.google.com/storage/docs/gsutil_install).
+command; see also the `gsutil` [installation instructions](https://cloud.google.com/storage/docs/gsutil_install).
 
 
 ### Notes
