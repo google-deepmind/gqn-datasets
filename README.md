@@ -61,8 +61,8 @@ batch size.
 ```python
   import tensorflow as tf
 
-  root_path = ...
-  data_reader = DataReader(version='jaco', context_size=5, root=root_path)
+  root_path = 'path/to/datasets/root/folder'
+  data_reader = DataReader(dataset='jaco', context_size=5, root=root_path)
   data = data_reader.read(batch_size=12)
 
   with tf.train.SingularMonitoredSession() as sess:
@@ -72,7 +72,11 @@ batch size.
 ### Download
 
 Raw data files referred to in this document are available to download
-[here](https://console.cloud.google.com/storage/gqn-dataset).
+[here](https://console.cloud.google.com/storage/gqn-dataset). To download the
+datasets you can use
+the [`gsutil cp`](https://cloud.google.com/storage/docs/gsutil/commands/cp)
+command; see also the [`gsutil` installation instructions]
+(https://cloud.google.com/storage/docs/gsutil_install).
 
 
 ### Notes
