@@ -98,7 +98,7 @@ def _get_dataset_files(dateset_info, mode, root):
 
   length = len(str(num_files))
   template = '{:0%d}-of-{:0%d}.tfrecord' % (length, length)
-  return [os.path.join(base, template.format(i, num_files))
+  return [os.path.join(base, template.format(i + 1, num_files))
           for i in range(num_files)]
 
 
