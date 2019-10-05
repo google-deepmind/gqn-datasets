@@ -21,7 +21,6 @@ from __future__ import print_function
 import collections
 import os
 import tensorflow as tf
-nest = tf.contrib.framework.nest
 
 DatasetInfo = collections.namedtuple(
     'DatasetInfo',
@@ -184,8 +183,8 @@ class DataReader(object):
       read_ops = [self._make_read_op(reader, filename_queue)
                   for _ in range(num_threads)]
 
-      dtypes = nest.map_structure(lambda x: x.dtype, read_ops[0])
-      shapes = nest.map_structure(lambda x: x.shape[1:], read_ops[0])
+      dtypes = tf.nest.map_structure(lambda x: x.dtype, read_ops[0])
+      shapes = tf.nest.map_structure(lambda x: x.shape[1:], read_ops[0])
 
       self._queue = tf.RandomShuffleQueue(
           capacity=capacity,
