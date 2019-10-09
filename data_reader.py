@@ -85,25 +85,9 @@ _NUM_RAW_CAMERA_PARAMS = 5
 _MODES = ('train', 'test')
 
 
-def _get_dataset_files(dateset_info, mode, root):
-    """Generates lists of files for a given dataset version."""
-    basepath = dateset_info.basepath
-    base = os.path.join(root, basepath, mode)
-    if mode == 'train':
-        num_files = dateset_info.train_size
-    else:
-        num_files = dateset_info.test_size
-
-    length = len(str(num_files))
-    template = '{:0%d}-of-{:0%d}.tfrecord' % (length, length)
-    
-    return [os.path.join(base, template.format(i + 1, num_files))
-            for i in range(num_files)]
-
-
 def _convert_frame_data(jpeg_data):
     decoded_frames = tf.image.decode_jpeg(jpeg_data)
-    
+
     return tf.image.convert_image_dtype(decoded_frames, dtype=tf.float32)
 
 
@@ -117,7 +101,7 @@ def _get_randomized_indices(context_size, sequence_size):
     indices = tf.range(0, sequence_size)
     indices = tf.random.shuffle(indices)
     indices = tf.slice(indices, begin=[0], size=example_size)
-    
+
     return indices, example_size
 
 
@@ -130,7 +114,7 @@ def data_reader(dataset,
                 shuffle_buffer_size=256,
                 num_parallel_reads=4,
                 seed=None):
-    
+
     if dataset not in _DATASETS:
         raise ValueError('Unrecognized dataset {} requested. Available datasets '
                          'are {}'.format(dataset, _DATASETS.keys()))
@@ -140,22 +124,22 @@ def data_reader(dataset,
                          'are {}'.format(mode, _MODES))
 
     dataset_info = _DATASETS[dataset]
-    
+
     if context_size is not None and context_size >= dataset_info.sequence_size:
         raise ValueError(
             'Maximum support context size for dataset {} is {}, but '
             'was {}.'.format(
                 dataset, dataset_info.sequence_size-1, context_size))
-    
+
     tf.random.set_seed(seed)
-    
+
     basepath = dataset_info.basepath
     file_pattern = os.path.join(root, basepath, mode, '*.tfrecord')
     files = tf.data.Dataset.list_files(file_pattern)
     raw_dataset = files.interleave(
         tf.data.TFRecordDataset, cycle_length=num_parallel_reads,
         num_parallel_calls=AUTOTUNE).shuffle(shuffle_buffer_size, seed=seed)
-    
+
     feature_map = {
     'frames': tf.io.FixedLenFeature(
         shape=dataset_info.sequence_size, dtype=tf.string),
@@ -163,13 +147,13 @@ def data_reader(dataset,
         shape=[dataset_info.sequence_size * _NUM_RAW_CAMERA_PARAMS],
         dtype=tf.float32)
     }
-    
+
     def _parse_function(example):
         return tf.io.parse_single_example(example, feature_map)
-    
+
     parsed_dataset = raw_dataset.map(_parse_function,
                                      num_parallel_calls=AUTOTUNE).batch(batch_size)
-    
+
     def _preprocess_fn(example):
         frames = example['frames']
         raw_pose_params = example['cameras']
@@ -213,11 +197,11 @@ def data_reader(dataset,
                        context_cameras=context_cameras,
                        query_camera=query_camera,
                        target=target)
-        
-        
+
+
         return TaskData(inputs=inputs, target=target)
-    
+
     preprocessed_dataset = parsed_dataset.map(_preprocess_fn,
                                               num_parallel_calls=AUTOTUNE)
-    
+
     return preprocessed_dataset.prefetch(buffer_size=AUTOTUNE)
