@@ -173,7 +173,7 @@ def data_reader(dataset,
             frames = tf.reshape(frames, (-1,) + dataset_image_dimensions)
             new_frame_dimensions = (custom_frame_size,) * 2 + (_NUM_CHANNELS,)
             frames = tf.image.resize(
-                frames, new_frame_dimensions[:2], align_corners=True)
+                frames, new_frame_dimensions[:2])
             frames = tf.reshape(
                 frames, (-1, example_size[0]) + new_frame_dimensions)
 
