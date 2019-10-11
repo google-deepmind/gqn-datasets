@@ -96,6 +96,8 @@ def _get_randomized_indices(context_size, sequence_size):
     if context_size is None:
         maximum_context_size = min(sequence_size-1, 20)
         context_size = tf.random.uniform([1], 1, maximum_context_size, dtype=tf.int32)
+    else:
+        context_size = tf.constant(context_size, shape=[1], dtype=tf.int32)
     example_size = context_size + 1
 
     indices = tf.range(0, sequence_size)
