@@ -52,21 +52,17 @@ The following version of the datasets are available:
     textures.
 
 ### Usage example
-
-To select what dataset to load, instantiate a reader passing the correct
-`version` argument. Note that the constructor will set up all the queues used by
-the reader. To get tensors call `read` on the data reader passing in the desired
-batch size.
-
 ```python
-  import tensorflow as tf
+  from data_reader import data_reader
 
   root_path = 'path/to/datasets/root/folder'
-  data_reader = DataReader(dataset='jaco', context_size=5, root=root_path)
-  data = data_reader.read(batch_size=12)
+  dataset = data_reader(dataset='jaco',
+                        root=root_path,
+                        batch_size=12,
+                        context_size=5)
 
-  with tf.train.SingularMonitoredSession() as sess:
-    d = sess.run(data)
+  # Train a Keras model on the dataset
+  model.fit(dataset)
 ```
 
 ### Download
