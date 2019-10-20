@@ -137,10 +137,10 @@ def data_reader(dataset,
 
     basepath = dataset_info.basepath
     file_pattern = os.path.join(root, basepath, mode, '*.tfrecord')
-    files = tf.data.Dataset.list_files(file_pattern)
+    files = tf.data.Dataset.list_files(file_pattern, shuffle=False)
     raw_dataset = files.interleave(
         tf.data.TFRecordDataset, cycle_length=num_parallel_reads,
-        num_parallel_calls=AUTOTUNE).shuffle(shuffle_buffer_size, seed=seed)
+        num_parallel_calls=AUTOTUNE).repeat().shuffle(shuffle_buffer_size, seed=seed)
 
     feature_map = {
     'frames': tf.io.FixedLenFeature(
