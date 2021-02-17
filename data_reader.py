@@ -219,15 +219,15 @@ class DataReader(object):
             dtype=tf.float32)
     }
     example = tf.parse_example(raw_data, feature_map)
-    indices = self._get_randomized_indices()
+    indices = self._get_randomized_indices(seed)
     frames = self._preprocess_frames(example, indices)
     cameras = self._preprocess_cameras(example, indices)
     return frames, cameras
 
-  def _get_randomized_indices(self):
+  def _get_randomized_indices(self, seed):
     """Generates randomized indices into a sequence of a specific length."""
     indices = tf.range(0, self._dataset_info.sequence_size)
-    indices = tf.random_shuffle(indices)
+    indices = tf.random_shuffle(indices, seed=seed)
     indices = tf.slice(indices, begin=[0], size=[self._example_size])
     return indices
 
