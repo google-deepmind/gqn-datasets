@@ -181,7 +181,7 @@ class DataReader(object):
       filename_queue = tf.train.string_input_producer(file_names, seed=seed)
       reader = tf.TFRecordReader()
 
-      read_ops = [self._make_read_op(reader, filename_queue)
+      read_ops = [self._make_read_op(reader, filename_queue, seed)
                   for _ in range(num_threads)]
 
       dtypes = nest.map_structure(lambda x: x.dtype, read_ops[0])
@@ -208,7 +208,7 @@ class DataReader(object):
     query = Query(context=context, query_camera=query_camera)
     return TaskData(query=query, target=target)
 
-  def _make_read_op(self, reader, filename_queue):
+  def _make_read_op(self, reader, filename_queue, seed):
     """Instantiates the ops used to read and parse the data into tensors."""
     _, raw_data = reader.read_up_to(filename_queue, num_records=16)
     feature_map = {
